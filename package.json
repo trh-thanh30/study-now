@@ -1,14 +1,41 @@
 {
   "name": "study-now",
   "private": true,
+  "type": "module",
+  "description": "",
+  "workspaces": [
+    "apps/web/",
+    "apps/server/",
+    "apps/mobile/*",
+    "packages/*"
+  ],
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "prisma:generate": "dotenv -e .env.development -- npx prisma generate --schema=apps/server/prisma/schema.prisma",
+    "prisma:push": "dotenv -e .env.development -- npx prisma db push --schema=apps/server/prisma/schema.prisma",
+    "prisma:migrate": "dotenv -e .env.development -- npx prisma migrate dev --schema=apps/server/prisma/schema.prisma",
+    "postinstall": "npm run prisma:generate",
+    "dev": "npm run prisma:generate && dotenv -e .env.development -- turbo run dev",
+    "dev:all": "npm run prisma:generate && dotenv -e .env.development -- turbo run dev --filter=@study/*",
+    "dev:frontend": "dotenv -e .env.development -- turbo run dev --filter=@study/web",
+    "dev:backend": "npm run prisma:generate && dotenv -e .env.development -- turbo run dev --filter=@study/server",
+    "dev:mobile": "dotenv -e .env.development -- turbo run dev --filter=@study/mobile",
+    "build": "npm run prisma:generate && cross-env NODE_OPTIONS=--max-old-space-size=8192 && turbo run build --concurrency=2",
+    "build:tui": "npm run prisma:generate && cross-env NODE_OPTIONS=--max-old-space-size=8192 && turbo run build --concurrency=1 --ui=tui",
+    "build:apps": "turbo run build --filter=@pos/*",
+    "build:packages": "turbo run build --filter=@repo/*",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "lint:fix": "turbo run lint --fix",
+    "type-check": "turbo run check-types",
+    "test": "turbo run test",
+    "test:watch": "turbo run test --watch",
+    "clean": "turbo run clean",
+    "clean:all": "turbo run clean && rm -rf node_modules",
+    "rest": "turbo run clean:all && npm install",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
+    "dotenv-cli": "^11.0.0",
     "prettier": "^3.6.2",
     "turbo": "^2.6.1",
     "typescript": "5.9.2"
@@ -16,9 +43,5 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "npm@10.8.2",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  "packageManager": "npm@10.8.2"
 }
