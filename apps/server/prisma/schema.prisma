@@ -13,3 +13,58 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// enum
+enum user_status {
+  ACTIVE // Active is a user who is active in the system
+  INACTIVE // Inactive is a user who is inactive in the system
+  SUSPENDED // Suspended is a user who is suspended in the system
+}
+enum user_role {
+  ADMIN // Who can manage all the system
+  USER // Who can use the system
+}
+/**
+ * User model
+ * 
+ * This model represents a user in the system.
+ * Each user has a unique id, email, username, and role.
+ * The role can be one of the following: USER, ADMIN, or SUPER_ADMIN.
+ * The status can be one of the following: ACTIVE, INACTIVE, or DELETED.
+ * The user can have a verification code sent to their email, which will expire after a certain amount of time.
+ * The user can also have a password reset code sent to their email, which will expire after a certain amount of time.
+ * 
+**/
+model User {
+  id          String      @id @default(uuid()) @db.Uuid
+  provider_id   String? 
+  provider   String? 
+  email       String      @unique
+  password    String?
+  username    String      @unique
+  role        user_role   @default(USER)
+  status      user_status @default(ACTIVE)
+  is_verified Boolean     @default(false)
+  last_login_at DateTime?
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  refresh_token String?
+
+  // code 
+  verification_code String?
+  verification_code_expired DateTime? 
+  password_reset_code String?
+  password_reset_code_expired DateTime?
+
+
+  @@index([id, username])
+  @@map("user")
+}
+model TimerSettings {
+  id String @id @default(uuid()) @db.Uuid
+  deep_work_session Int @default(25) // minutes
+  break_time Int @default(5) //  minutes
+  is_notifications Boolean @default(false)
+
+  @@index([id])
+}

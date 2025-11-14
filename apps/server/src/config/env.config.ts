@@ -1,5 +1,3 @@
-import path from 'path';
-import fs from 'fs';
 import { z } from 'zod';
 
 const envSchema = z.object({
@@ -115,8 +113,8 @@ export function validateEnv(input: Record<string, unknown>): Environment {
 
   // Log successful validation in development
   if (parsed.data.NODE_ENV === 'development') {
-    const envFilePath = path.resolve(process.cwd(), '../../.env.development');
-    const rawEnv = fs.readFileSync(envFilePath, 'utf-8');
+    // const envFilePath = path.resolve(process.cwd(), '../../.env.development');
+    // const rawEnv = fs.readFileSync(envFilePath, 'utf-8');
     console.log('✅ Environment variables validated successfully');
     console.log('🔍 Parsed environment variables:', parsed.data);
     // console.log('🔍 Raw environment file:', rawEnv);
