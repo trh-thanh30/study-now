@@ -43,6 +43,7 @@ export class UserService {
         id,
       },
       data: {
+        ...updateUserDto,
         email: updateUserDto.email,
         password: updateUserDto.password,
         username: updateUserDto.username,
@@ -68,6 +69,20 @@ export class UserService {
     return await this.prisma.user.findUnique({
       where: {
         username,
+      },
+    });
+  }
+  async findUserByVerificationEmail(code: string) {
+    return await this.prisma.user.findFirst({
+      where: {
+        verification_code: code,
+      },
+    });
+  }
+  async findUserByResetPasswordCode(code: string) {
+    return await this.prisma.user.findFirst({
+      where: {
+        password_reset_code: code,
       },
     });
   }

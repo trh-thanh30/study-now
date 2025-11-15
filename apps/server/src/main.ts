@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import appConfig from './config/app.config';
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
+import { ClientErrorFilter } from './common/response/client-errors/client-error.filter';
 
 async function bootstrap() {
   try {
@@ -41,7 +42,7 @@ async function bootstrap() {
     app.useGlobalInterceptors();
 
     // 3. Apply exception filter last
-    app.useGlobalFilters();
+    app.useGlobalFilters(new ClientErrorFilter());
 
     // Start the application
     const port = appCfg.port;

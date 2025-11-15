@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { EmailService } from './email.service';
 import { Job } from 'bullmq';
@@ -8,12 +11,21 @@ export class EmailConsumer extends WorkerHost {
     super();
   }
   async process(job: Job<any>): Promise<any> {
-    const { data } = job;
+    const { data, name } = job;
     console.log('Processing email job', job.name, job.data);
-    return this.mailService.sendVerificationEmail(
-      data.email,
-      data.code,
-      data.ttl,
-    );
+    if (name === 'sendVerificationEmail') {
+      return this.mailService.sendVerificationEmail(
+        data.email,
+        data.code,
+        data.ttl,
+      );
+    }
+    if (name === 'sendResetPasswordEmail') {
+      return this.mailService.sendResetPasswordEmail(
+        data.email,
+        data.code,
+        data.ttl,
+      );
+    }
   }
 }

@@ -25,7 +25,7 @@ export class EmailService {
         pass: this.config.smtpPass,
       },
     });
-    console.log('transporter', this.config);
+    console.log('Transporter config email: ', this.config);
 
     this.transporter.verify((error, success) => {
       if (error) {
@@ -68,11 +68,17 @@ export class EmailService {
   async sendVerificationEmail(email: string, code: string, ttl: Date) {
     try {
       const html = this.renderTemplate('verify-email', { code, ttl });
-      console.log(html);
-      console.log('email', email);
       await this.sendEmail(email, 'Verify your email', '', html);
     } catch (err) {
       console.error('Error in sendVerificationEmail:', err);
+    }
+  }
+  async sendResetPasswordEmail(email: string, code: string, ttl: Date) {
+    try {
+      const html = this.renderTemplate('reset-password', { code, ttl });
+      await this.sendEmail(email, 'Reset your password', '', html);
+    } catch (err) {
+      console.error('Error in sendResetPasswordEmail:', err);
     }
   }
 }

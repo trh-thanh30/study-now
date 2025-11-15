@@ -7,9 +7,9 @@ export class EmailController {
   @Post('send')
   async send() {
     await this.email.sendEmail(
-      'tranhuuthanhcp@gmail.com',
-      'Verify your email',
-      'test',
+      'your-email@gmail.com',
+      'For testing email',
+      'This is a test email',
     );
   }
 }

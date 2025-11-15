@@ -10,11 +10,15 @@ import {
   appConfig,
   bullConfig,
   bullConfigFactory,
+  cookieConfig,
   databaseConfig,
   emailConfig,
+  limitRequestConfig,
+  limitRequestConfigFactory,
   validateEnv,
 } from './config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
 import { AuthModule } from './module/auth/auth.module';
 import { BullModule } from '@nestjs/bullmq';
@@ -28,7 +32,19 @@ import { EmailModule } from './email/email.module';
       expandVariables: true,
       envFilePath: path.resolve(process.cwd(), '../../.env.development'),
       validate: validateEnv,
-      load: [databaseConfig, appConfig, emailConfig, bullConfig],
+      load: [
+        databaseConfig,
+        appConfig,
+        emailConfig,
+        bullConfig,
+        cookieConfig,
+        limitRequestConfig,
+      ],
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: limitRequestConfigFactory,
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -47,6 +63,10 @@ import { EmailModule } from './email/email.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: ApiResponseInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
