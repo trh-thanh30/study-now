@@ -4,6 +4,7 @@ import { ConfigType } from '@nestjs/config';
 import appConfig from './config/app.config';
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ClientErrorFilter } from './common/response/client-errors/client-error.filter';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   try {
@@ -20,6 +21,9 @@ async function bootstrap() {
         },
       ],
     });
+
+    // Set cookie parser
+    app.use(cookieParser());
 
     // Get app config
     const appCfg = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);

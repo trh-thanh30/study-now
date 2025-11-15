@@ -55,8 +55,12 @@ const envSchema = z.object({
   REDIS_PORT: z.coerce.number().default(6379),
 
   // Security
-  JWT_SECRET: z.string().default('your-super-secret-jwt-key-here'),
-  JWT_EXPIRES_IN: z.string().default('24h'),
+  JWT_ACCESS_SECRET: z.string().default('your-super-secret-jwt-key-here'),
+  JWT_ACCESS_EXPIRES_IN: z.string().default('24h'),
+  JWT_REFRESH_SECRET: z
+    .string()
+    .default('your-super-secret-refresh-jwt-key-here'),
+  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 
   // Email Configuration (Optional)
   SMTP_HOST: z.string().optional(),

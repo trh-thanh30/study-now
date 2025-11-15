@@ -26,7 +26,6 @@ export class EmailService {
       },
     });
     console.log('Transporter config email: ', this.config);
-
     this.transporter.verify((error, success) => {
       if (error) {
         console.log(error);

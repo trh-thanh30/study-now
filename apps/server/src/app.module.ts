@@ -15,6 +15,7 @@ import {
   emailConfig,
   limitRequestConfig,
   limitRequestConfigFactory,
+  tokenConfig,
   validateEnv,
 } from './config';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
@@ -39,6 +40,7 @@ import { EmailModule } from './email/email.module';
         bullConfig,
         cookieConfig,
         limitRequestConfig,
+        tokenConfig,
       ],
     }),
     ThrottlerModule.forRootAsync({
