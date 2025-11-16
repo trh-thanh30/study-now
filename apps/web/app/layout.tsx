@@ -1,20 +1,15 @@
 import '@mantine/core/styles.css';
-
+import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import { MantineProvider } from '@mantine/core';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Toaster } from 'react-hot-toast';
 
-import localFont from 'next/font/local';
 import './globals.css';
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
+const fontSans = Inter({
+  variable: '--font-sans',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
@@ -28,15 +23,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={` ${geistMono.variable}`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={` ${fontSans.className} font-sans `}>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
         <MantineProvider>{children}</MantineProvider>
         <Toaster
           toastOptions={{
             style: {
               background: '#fff',
-              color: '#000',
+              color: '#444',
               fontSize: '0.85rem',
               padding: '8px 16px',
               fontWeight: 500,

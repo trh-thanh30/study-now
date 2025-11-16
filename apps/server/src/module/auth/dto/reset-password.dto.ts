@@ -9,6 +9,7 @@ export class ResetPasswordDto {
   newPassword: string;
 
   @IsString()
+  @MinLength(6, { message: 'Password must be at least 6 characters' })
   @IsNotEmpty({
     message: 'Confirm password is required',
   })

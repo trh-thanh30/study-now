@@ -28,6 +28,17 @@ async function bootstrap() {
 
     // Set cookie parser
     app.use(cookieParser());
+    app.enableCors({
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3002',
+      ],
+      credentials: true,
+      allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+      exposedHeaders: 'Set-Cookie',
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    });
 
     // Get app config
     const appCfg = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);

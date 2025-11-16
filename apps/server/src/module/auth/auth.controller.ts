@@ -94,7 +94,7 @@ export class AuthController {
   @Throttle({ default: { limit: 1, ttl: 60 } })
   @Post('resend-verification')
   @ApiSuccess('Verification code sent successfully. Please check your email.')
-  resendVerificationEmail(@Body('email') email: string) {
+  resendVerificationEmail(@Body() email: RequestEmailDto) {
     return this.authService.resendVerificationEmail(email);
   }
 

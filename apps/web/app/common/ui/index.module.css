@@ -1,0 +1,6 @@
+:root {
+  --mantine-color-black-filled: #333;
+}
+.input {
+  border: 1px solid var(--mantine-color-black-filled);
+}

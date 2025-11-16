@@ -104,6 +104,8 @@ export class AuthService {
    * @throws ValidationError if the verification code is incorrect or has expired.
    */
   async verifyEmail(verificationCode: string) {
+    if (!verificationCode)
+      throw new ValidationError(this.errMsg.INCORRECT_VERIFICATION_CODE);
     const user =
       await this.userService.findUserByVerificationEmail(verificationCode);
     if (user?.verification_code !== verificationCode) {
@@ -143,8 +145,8 @@ export class AuthService {
    * @throws NotFoundError if the user with the given email address does not exist.
    * @throws ValidationError if the user with the given email address has already been verified.
    */
-  async resendVerificationEmail(email: string) {
-    const user = await this.userService.findUserByEmail(email);
+  async resendVerificationEmail(dto: RequestEmailDto) {
+    const user = await this.userService.findUserByEmail(dto.email);
     if (!user) throw new NotFoundError(this.errMsg.NOT_FOUND_USER);
     // if (user.is_verified === true)
     //   throw new ValidationError(this.errMsg.USER_ALREADY_VERIFIED);
@@ -154,7 +156,7 @@ export class AuthService {
         length: 6,
       });
     await this.mailQueue.add('sendVerificationEmail', {
-      email,
+      email: dto.email,
       code,
       ttl: expiredAt,
     });

@@ -18,6 +18,7 @@ export class ApiResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => ({
         status: 'success',
+        success: true,
         statusCode: context.switchToHttp().getResponse().statusCode,
         timestamp: new Date().toISOString(),
         path: context.switchToHttp().getRequest().url,
