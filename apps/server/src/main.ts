@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
-import appConfig from './config/app.config';
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
-import { ClientErrorFilter } from './common/response/client-errors/client-error.filter';
+import { ALlCustomExceptionFilter } from './common/filter/all-custom-exception-filter';
+import appConfig from './config/app.config';
 import cookieParser from 'cookie-parser';
+import { HttpLoggerInterceptor } from './common/interceptors/http-logger.interceptor';
+import { FormatLoggerService } from './common/logger/format-logger.service';
 
 async function bootstrap() {
   try {
@@ -12,6 +14,8 @@ async function bootstrap() {
       bufferLogs: true, // log to stdout
     });
 
+    // Set logger
+    const httpLogger = app.get(FormatLoggerService);
     // Set global prefix
     app.setGlobalPrefix('/api/v1', {
       exclude: [
@@ -43,10 +47,10 @@ async function bootstrap() {
     );
 
     // 2. Apply global interceptors
-    app.useGlobalInterceptors();
+    app.useGlobalInterceptors(new HttpLoggerInterceptor(httpLogger));
 
     // 3. Apply exception filter last
-    app.useGlobalFilters(new ClientErrorFilter());
+    app.useGlobalFilters(new ALlCustomExceptionFilter());
 
     // Start the application
     const port = appCfg.port;

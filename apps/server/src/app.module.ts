@@ -26,6 +26,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { EmailModule } from './email/email.module';
 import { AuthGuard } from './common/guard/jwt-auth.guard';
 import { TokenUseCase as TokenService } from './module/auth/use-case/jwt-token.usecase';
+import { FormatLoggerService } from './common/logger/format-logger.service';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { TokenUseCase as TokenService } from './module/auth/use-case/jwt-token.u
   providers: [
     AppService,
     TokenService,
+    FormatLoggerService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ApiResponseInterceptor,

@@ -330,6 +330,18 @@ export class AuthService {
     });
   }
 
+  /**
+   * Refreshes the user's access token and refresh token.
+   * Checks if the refresh token is valid.
+   * Checks if the user with the given id exists.
+   * Checks if the user is verified and active.
+   * Updates the user's access token and refresh token.
+   * Returns the updated user object.
+   * @param refreshToken The refresh token to refresh the user's access token and refresh token.
+   * @returns the updated user object.
+   * @throws NotFoundError if the user with the given id does not exist.
+   * @throws ValidationError if the user is not verified or active.
+   */
   async refreshToken(refresh_token: string) {
     const payload = this.tokenUseCase.verifyRefreshToken(refresh_token);
     const user = await this.userService.findOne(payload.id as string);

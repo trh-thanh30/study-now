@@ -4,9 +4,10 @@ export class UnauthorizedError extends BaseClientError {
   constructor(
     resource: string = 'resource',
     code: string = 'UNAUTHORIZED',
+    statusCode: number = 401,
     details: Record<string, unknown> = {},
   ) {
-    super(`${resource}`, 401, code, details);
+    super(`${resource}`, statusCode, code, details);
   }
 }
 

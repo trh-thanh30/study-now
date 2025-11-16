@@ -5,7 +5,6 @@ import {
   Inject,
   Post,
   Req,
-  Request,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,13 +15,13 @@ import { RequestEmailDto } from './dto/request-email.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { LoginDto } from './dto/login.dto';
-import express from 'express';
 import { cookieConfig } from 'src/config';
-import type { ConfigType } from '@nestjs/config';
 import { Public } from 'src/common/decorators/public.decorator';
-import type { User as UserType } from 'src/common/types/user.type';
 import { User } from 'src/common/decorators/user.decorator';
 import { UnauthorizedError } from 'src/common/response/client-errors';
+import type { ConfigType } from '@nestjs/config';
+import type { User as UserType } from 'src/common/types/user.type';
+import express from 'express';
 @Controller('auth')
 export class AuthController {
   constructor(
