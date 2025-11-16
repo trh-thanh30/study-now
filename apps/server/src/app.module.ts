@@ -24,6 +24,8 @@ import { ApiResponseInterceptor } from './common/interceptors/api-response.inter
 import { AuthModule } from './module/auth/auth.module';
 import { BullModule } from '@nestjs/bullmq';
 import { EmailModule } from './email/email.module';
+import { AuthGuard } from './common/guard/jwt-auth.guard';
+import { TokenUseCase as TokenService } from './module/auth/use-case/jwt-token.usecase';
 
 @Module({
   imports: [
@@ -62,6 +64,7 @@ import { EmailModule } from './email/email.module';
   controllers: [AppController],
   providers: [
     AppService,
+    TokenService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ApiResponseInterceptor,
@@ -69,6 +72,10 @@ import { EmailModule } from './email/email.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })

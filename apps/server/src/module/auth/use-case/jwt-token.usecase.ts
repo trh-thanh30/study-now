@@ -21,6 +21,7 @@ export class TokenUseCase {
   generateTokenPair(payload: User) {
     const access_token = jwt.sign(payload, this.config.access_secret, {
       expiresIn: this.toExpire(this.config.access_expires_in),
+      algorithm: 'HS256',
     });
 
     const refresh_token = jwt.sign(payload, this.config.refresh_secret, {
@@ -31,7 +32,9 @@ export class TokenUseCase {
   }
   verifyAccessToken(access_token: string): JwtPayload {
     try {
-      const decoded = jwt.verify(access_token, this.config.access_secret);
+      const decoded = jwt.verify(access_token, this.config.access_secret, {
+        algorithms: ['HS256'],
+      });
       if (typeof decoded === 'string') {
         throw new UnauthorizedError('Invalid or expired refresh token.');
       }
@@ -44,7 +47,9 @@ export class TokenUseCase {
 
   verifyRefreshToken(refresh_token: string): JwtPayload {
     try {
-      const decoded = jwt.verify(refresh_token, this.config.refresh_secret);
+      const decoded = jwt.verify(refresh_token, this.config.refresh_secret, {
+        algorithms: ['HS256'],
+      });
       if (typeof decoded === 'string') {
         throw new UnauthorizedError('Invalid or expired refresh token.');
       }

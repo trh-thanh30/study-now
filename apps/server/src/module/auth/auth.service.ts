@@ -296,6 +296,60 @@ export class AuthService {
       id: user.id,
     };
   }
+  /**
+   * Returns the user object with the given id.
+   * Checks if the user with the given id exists.
+   * @returns the user object with the given id.
+   * @throws NotFoundError if the user with the given id does not exist.
+   */
+  async profile(user_id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: user_id,
+      },
+    });
+    if (!user) throw new NotFoundError(this.errMsg.NOT_FOUND_USER);
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    };
+  }
+  /**
+   * Removes the refresh token for the user with the given id.
+   * @param user_id The id of the user to remove the refresh token for.
+   */
+  async logout(user_id: string) {
+    await this.prisma.user.update({
+      where: {
+        id: user_id,
+      },
+      data: {
+        refresh_token: null,
+      },
+    });
+  }
+
+  async refreshToken(refresh_token: string) {
+    const payload = this.tokenUseCase.verifyRefreshToken(refresh_token);
+    const user = await this.userService.findOne(payload.id as string);
+    this.validateUserCanLogin(user as User);
+    const { access_token, refresh_token: newRefreshToken } =
+      this.tokenUseCase.generateTokenPair({
+        id: user?.id as string,
+        email: user?.email as string,
+        username: user?.username as string,
+        role: user?.role as string,
+      });
+    await this.userService.updateRefreshToken(
+      user?.id as string,
+      newRefreshToken,
+    );
+    return {
+      access_token,
+      refresh_token: newRefreshToken,
+    };
+  }
 
   private validateUserCanLogin(user: User) {
     if (!user.is_verified) {
