@@ -5,7 +5,7 @@ export interface ApiSuccessResponse<T> {
   timestamp: string;
   path: string;
   message: string;
-  data: T;
+  data?: T;
 }
 export interface ApiErrorResponse {
   success: false;
@@ -13,7 +13,7 @@ export interface ApiErrorResponse {
     code: string;
     statusCode: number;
     message: string;
-    details?: any;
+    details?: unknown;
   };
   meta: {
     timestamp: string;
@@ -22,4 +22,4 @@ export interface ApiErrorResponse {
 }
 
 // This is the union of both success + error
-export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
+export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;

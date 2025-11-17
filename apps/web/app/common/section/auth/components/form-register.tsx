@@ -1,25 +1,35 @@
 'use client';
-import React from 'react';
-import { Button, Input } from '../../../ui';
-import { Divider, Loader } from '@mantine/core';
-import { ArrowRight, Lock, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { Button, Input, Modal } from '../../../ui';
+import { Divider } from '@mantine/core';
+import { Lock, Mail } from 'lucide-react';
 import Link from 'next/link';
 import useAuth from '../../../../hooks/use-auth';
+import FormVerifyEmail from './form-verify-email';
+import { ButtonWithArrow } from '../../../../components';
 
 export default function FormRegister() {
+  const [openModalVerifyEmail, setOpenModalVerifyEmail] = useState(false);
+
   const {
     registerForm: {
       register,
       handleSubmit,
+      getValues,
       formState: { errors },
     },
-    loading,
     handleRegister,
   } = useAuth();
+
   return (
     <>
       <form
-        onSubmit={handleSubmit(handleRegister)}
+        onSubmit={handleSubmit(async () => {
+          const success = await handleRegister(getValues());
+          if (success) {
+            setOpenModalVerifyEmail(true);
+          }
+        })}
         className="bg-white rounded-2xl  min-w-lg shadow-lg py-12 px-10 space-y-5 mx-auto "
       >
         {/* Google Sign In Button */}
@@ -104,17 +114,8 @@ export default function FormRegister() {
         />
 
         {/* Register Button */}
-        <button
-          type="submit"
-          className="w-full bg-black hover:bg-gray-800 text-sm disabled:bg-gray-400 text-white font-semibold py-2 cursor-pointer px-4 rounded-full transition-colors duration-200 flex items-center justify-center gap-2 group"
-        >
-          <span>{loading ? <Loader size={'sm'} color="#fff" /> : 'Sign Up'}</span>
-          {!loading && (
-            <span className="group-hover:translate-x-2 transition-all duration-300">
-              <ArrowRight size={16} />
-            </span>
-          )}
-        </button>
+
+        <ButtonWithArrow title="Sign Up" type="submit" />
 
         {/* Sign Up Link */}
         <p className="text-center text-gray-600 text-sm">
@@ -124,6 +125,16 @@ export default function FormRegister() {
           </Link>
         </p>
       </form>
+      {openModalVerifyEmail && (
+        <Modal
+          size="lg"
+          title="Verify Email"
+          opened={openModalVerifyEmail}
+          onClose={() => setOpenModalVerifyEmail(false)}
+        >
+          <FormVerifyEmail setOpenModalVerifyEmail={setOpenModalVerifyEmail} />
+        </Modal>
+      )}
     </>
   );
 }

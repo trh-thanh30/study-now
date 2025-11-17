@@ -2,11 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ALlCustomExceptionFilter } from './common/filter/all-custom-exception-filter';
-import appConfig from './config/app.config';
-import cookieParser from 'cookie-parser';
 import { HttpLoggerInterceptor } from './common/interceptors/http-logger.interceptor';
 import { FormatLoggerService } from './common/logger/format-logger.service';
+import appConfig from './config/app.config';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   try {
@@ -39,6 +40,15 @@ async function bootstrap() {
       exposedHeaders: 'Set-Cookie',
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     });
+
+    // Set swagger
+    const docCfg = new DocumentBuilder()
+      .setTitle('Study Now API')
+      .setDescription('The Study Now API description')
+      .setVersion('1.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, docCfg);
+    SwaggerModule.setup('api', app, document);
 
     // Get app config
     const appCfg = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);

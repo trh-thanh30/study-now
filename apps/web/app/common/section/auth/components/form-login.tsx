@@ -1,10 +1,16 @@
-import React from 'react';
-import { Button, Checkbox, Input } from '../../../ui';
+'use client';
+import React, { useState } from 'react';
+import { Button, Checkbox, Input, Modal } from '../../../ui';
 import { Divider } from '@mantine/core';
-import { ArrowRight, Lock, Mail } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
+import { FormForgotPassword } from './form-forgot-password';
+import { ButtonWithArrow } from '../../../../components';
 import Link from 'next/link';
+import FormResetPassword from './form-reset-password';
 
 export default function FormLogin() {
+  const [isOpenModalForgotPassword, setOpenModalForgotPassword] = useState(false);
+  const [stepForgotPassword, setStepForgotPassword] = useState(1);
   return (
     <>
       <form className="bg-white rounded-2xl  min-w-lg shadow-lg py-12 px-10 space-y-6 mx-auto ">
@@ -76,18 +82,17 @@ export default function FormLogin() {
         {/* Remember Me & Forgot Password */}
         <div className="flex items-center justify-between">
           <Checkbox label="Remember me" size="sm" radius="xl" />
-          <button className="text-sm text-gray-500 hover:text-gray-900  font-medium cursor-pointer">
+          <button
+            onClick={() => setOpenModalForgotPassword(true)}
+            type="button"
+            className="text-sm text-gray-500 hover:text-gray-900  font-medium cursor-pointer"
+          >
             Forgot password?
           </button>
         </div>
 
         {/* Sign In Button */}
-        <button className="w-full bg-black hover:bg-gray-800 text-sm disabled:bg-gray-400 text-white font-semibold py-2 cursor-pointer px-4 rounded-full transition-colors duration-200 flex items-center justify-center gap-2 group">
-          <span>Sign In</span>
-          <span className="group-hover:translate-x-2 transition-all duration-300">
-            <ArrowRight size={16} />
-          </span>
-        </button>
+        <ButtonWithArrow title="Sign In" type="submit" />
 
         {/* Sign Up Link */}
         <p className="text-center text-gray-600 text-sm">
@@ -97,6 +102,19 @@ export default function FormLogin() {
           </Link>
         </p>
       </form>
+      <Modal
+        size="lg"
+        opened={isOpenModalForgotPassword}
+        onClose={() => setOpenModalForgotPassword(false)}
+        title={stepForgotPassword === 1 ? 'Forgot Password' : 'Reset Password'}
+      >
+        {stepForgotPassword === 1 && (
+          <FormForgotPassword setStepForgotPassword={setStepForgotPassword} />
+        )}
+        {stepForgotPassword === 2 && (
+          <FormResetPassword setStepForgotPassword={setStepForgotPassword} />
+        )}
+      </Modal>
     </>
   );
 }
