@@ -282,7 +282,7 @@ export class AuthService {
       throw new ValidationError(this.errMsg.INCORRECT_PASSWORD);
     }
     // validate
-    this.validateUserCanLogin(user);
+    // this.validateUserCanLogin(user);
     const { access_token, refresh_token } = this.tokenUseCase.generateTokenPair(
       {
         id: user.id,
@@ -292,6 +292,7 @@ export class AuthService {
       },
     );
     await this.userService.updateRefreshToken(user.id, refresh_token);
+    await this.userService.updateLastLogin(user.id);
     return {
       access_token,
       refresh_token,

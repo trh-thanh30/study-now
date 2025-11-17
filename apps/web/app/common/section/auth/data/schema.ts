@@ -69,15 +69,20 @@ export const forgotPasswordSchema = z.object({
 /**
  * resetPassword is a schema for verifying a user's email
  */
-export const resetPasswordSchema = z.object({
-  newPassword: z.string().nonempty({ error: 'New password is required' }).min(6, {
-    error: 'Password must be at least 6 characters',
-  }),
-  confirmNewPassword: z.string().nonempty({ error: 'Confirm password is required' }).min(6, {
-    error: 'Password must be at least 6 characters',
-  }),
-  code: z.string().nonempty({ error: 'Code is required' }),
-});
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z.string().nonempty({ error: 'New password is required' }).min(6, {
+      error: 'Password must be at least 6 characters',
+    }),
+    confirmNewPassword: z.string().nonempty({ error: 'Confirm password is required' }).min(6, {
+      error: 'Password must be at least 6 characters',
+    }),
+    code: z.string().nonempty({ error: 'Code is required' }),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmNewPassword'], // This specifies where the error message will be attached
+  });
 
 /**
  * registerData is a type for registerSchema

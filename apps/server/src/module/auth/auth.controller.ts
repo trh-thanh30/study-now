@@ -65,6 +65,8 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 4, ttl: 60 } })
   @Post('forgot-password')
   @ApiSuccess('Password reset code sent successfully. Please check your email.')
   forgotPassword(@Body() dto: RequestEmailDto) {

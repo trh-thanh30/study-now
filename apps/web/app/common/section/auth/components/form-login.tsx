@@ -7,17 +7,39 @@ import { FormForgotPassword } from './form-forgot-password';
 import { ButtonWithArrow } from '../../../../components';
 import Link from 'next/link';
 import FormResetPassword from './form-reset-password';
+import useAuth from '../../../../hooks/use-auth';
+import { useRouter } from 'next/navigation';
 
 export default function FormLogin() {
-  const [isOpenModalForgotPassword, setOpenModalForgotPassword] = useState(false);
-  const [stepForgotPassword, setStepForgotPassword] = useState(1);
+  const [isOpenModalForgotPassword, setOpenModalForgotPassword] = useState<boolean>(false);
+  const [stepForgotPassword, setStepForgotPassword] = useState<number>(1);
+  const [email, setEmail] = useState<string>('');
+  const {
+    loginForm: {
+      register,
+      handleSubmit,
+      getValues,
+      formState: { errors },
+    },
+    handleLogin,
+  } = useAuth();
+  const router = useRouter();
   return (
     <>
-      <form className="bg-white rounded-2xl  min-w-lg shadow-lg py-12 px-10 space-y-6 mx-auto ">
+      <form
+        onSubmit={handleSubmit(async () => {
+          const success = await handleLogin(getValues());
+          if (success) {
+            router.push('/dashboard/timer');
+          }
+        })}
+        className="bg-white rounded-2xl  min-w-lg shadow-lg py-12 px-10 space-y-5 mx-auto "
+      >
         {/* Google Sign In Button */}
         <Button
           title="Sign in with Google"
           variant="outline"
+          type="button"
           color="#333"
           radius="xl"
           size="md"
@@ -59,6 +81,8 @@ export default function FormLogin() {
         {/* Email Input */}
         <Input
           withAsterisk
+          {...register('email')}
+          error={errors.email?.message}
           type="email"
           label="Email"
           placeholder="Enter your email"
@@ -71,6 +95,8 @@ export default function FormLogin() {
         <Input
           withAsterisk
           isInputPassword
+          {...register('password')}
+          error={errors.password?.message}
           type="password"
           label="Password"
           placeholder="Enter your password"
@@ -104,15 +130,20 @@ export default function FormLogin() {
       </form>
       <Modal
         size="lg"
+        closeOnClickOutside={false}
         opened={isOpenModalForgotPassword}
         onClose={() => setOpenModalForgotPassword(false)}
         title={stepForgotPassword === 1 ? 'Forgot Password' : 'Reset Password'}
       >
         {stepForgotPassword === 1 && (
-          <FormForgotPassword setStepForgotPassword={setStepForgotPassword} />
+          <FormForgotPassword setStepForgotPassword={setStepForgotPassword} setEmail={setEmail} />
         )}
         {stepForgotPassword === 2 && (
-          <FormResetPassword setStepForgotPassword={setStepForgotPassword} />
+          <FormResetPassword
+            setStepForgotPassword={setStepForgotPassword}
+            setIsOpenModal={setOpenModalForgotPassword}
+            email={email}
+          />
         )}
       </Modal>
     </>

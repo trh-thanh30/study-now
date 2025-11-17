@@ -96,4 +96,14 @@ export class UserService {
       },
     });
   }
+  async updateLastLogin(id: string) {
+    return await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        last_login_at: new Date(),
+      },
+    });
+  }
 }

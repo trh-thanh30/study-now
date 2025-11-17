@@ -3,12 +3,24 @@ import React from 'react';
 import { Input } from '../../../ui';
 import { Mail } from 'lucide-react';
 import { ButtonWithArrow, Logo } from '../../../../components';
+import useAuth from '../../../../hooks/use-auth';
 
 export function FormForgotPassword({
   setStepForgotPassword,
+  setEmail,
 }: {
   setStepForgotPassword: (step: number) => void;
+  setEmail: (email: string) => void;
 }) {
+  const {
+    forgotPasswordForm: {
+      register,
+      handleSubmit,
+      getValues,
+      formState: { errors },
+    },
+    handleForgotPassword,
+  } = useAuth();
   return (
     <div className="flex flex-col gap-4">
       <div className="gap-3 flex flex-col items-center justify-center">
@@ -18,9 +30,20 @@ export function FormForgotPassword({
           your password.
         </p>
       </div>
-      <form className=" space-y-5">
+      <form
+        onSubmit={handleSubmit(async () => {
+          const success = await handleForgotPassword(getValues());
+          if (success) {
+            setStepForgotPassword(2);
+            setEmail(getValues().email);
+          }
+        })}
+        className=" space-y-5"
+      >
         {/* Email Input */}
         <Input
+          {...register('email')}
+          error={errors.email?.message}
           withAsterisk
           type="email"
           label="Email"

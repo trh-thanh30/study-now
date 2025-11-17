@@ -8,6 +8,8 @@ import {
   loginSchema,
   registerData,
   registerSchema,
+  resetPasswordData,
+  resetPasswordSchema,
   verifyEmailData,
   verifyEmailSchema,
 } from '../common/section/auth/data/schema';
@@ -38,6 +40,10 @@ export default function useAuth() {
   // Forgot password form
   const forgotPasswordForm = useForm<forgotPasswordData>({
     resolver: zodResolver(forgotPasswordSchema),
+  });
+  // Reset password form
+  const resetPasswordForm = useForm<resetPasswordData>({
+    resolver: zodResolver(resetPasswordSchema),
   });
 
   /**
@@ -75,7 +81,17 @@ export default function useAuth() {
   };
 
   const handleLogin = async (data: loginData) => {
-    // do some things
+    try {
+      const res = await api.post<ApiResponse>(`${AUTH_ENDPOINT.LOGIN}`, data);
+      if (res.data.success) {
+        showSuccessToast(res.data.message);
+        return true;
+      }
+    } catch (error) {
+      const msg = getApiErrorMessage(error);
+      showErrorToast(msg);
+      return false;
+    }
   };
 
   const handleForgotPassword = async (data: forgotPasswordData) => {
@@ -86,10 +102,25 @@ export default function useAuth() {
       );
       if (res.data.success) {
         showSuccessToast(res.data.message);
+        return true;
       }
     } catch (err) {
       const msg = getApiErrorMessage(err);
       showErrorToast(msg);
+      return false;
+    }
+  };
+  const handleResetPassword = async (data: resetPasswordData) => {
+    try {
+      const res = await api.post<ApiResponse>(`${AUTH_ENDPOINT.RESET_PASSWORD}`, data);
+      if (res.data.success) {
+        showSuccessToast(res.data.message);
+        return true;
+      }
+    } catch (err) {
+      const msg = getApiErrorMessage(err);
+      showErrorToast(msg);
+      return false;
     }
   };
   return {
@@ -97,10 +128,12 @@ export default function useAuth() {
     verifyEmailForm,
     loginForm,
     forgotPasswordForm,
+    resetPasswordForm,
     loading,
     handleRegister,
     handleVerifyEmail,
     handleLogin,
     handleForgotPassword,
+    handleResetPassword,
   };
 }
