@@ -296,7 +296,12 @@ export class AuthService {
     return {
       access_token,
       refresh_token,
-      id: user.id,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
     };
   }
   /**
@@ -348,7 +353,7 @@ export class AuthService {
   async refreshToken(refresh_token: string) {
     const payload = this.tokenUseCase.verifyRefreshToken(refresh_token);
     const user = await this.userService.findOne(payload.id as string);
-    this.validateUserCanLogin(user as User);
+    // this.validateUserCanLogin(user as User);
     const { access_token, refresh_token: newRefreshToken } =
       this.tokenUseCase.generateTokenPair({
         id: user?.id as string,
@@ -363,6 +368,12 @@ export class AuthService {
     return {
       access_token,
       refresh_token: newRefreshToken,
+      user: {
+        id: user?.id as string,
+        email: user?.email as string,
+        username: user?.username as string,
+        role: user?.role as string,
+      },
     };
   }
 

@@ -5,7 +5,7 @@ export interface ApiSuccessResponse<T> {
   timestamp: string;
   path: string;
   message: string;
-  data?: T;
+  data: T;
 }
 export interface ApiErrorResponse {
   success: false;

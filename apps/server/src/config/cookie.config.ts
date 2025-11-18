@@ -6,4 +6,5 @@ export default registerAs('cookie', () => ({
   secure: process.env.COOKIE_SECURE || false,
   httpOnly: process.env.COOKIE_HTTP_ONLY || true,
   maxAge: process.env.COOKIE_MAX_AGE || 7 * 24 * 60 * 60 * 1000,
+  path: process.env.COOKIE_PATH || '/',
 }));

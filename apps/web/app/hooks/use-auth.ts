@@ -20,10 +20,15 @@ import { useToast } from './use-toast';
 import { useState } from 'react';
 import { getApiErrorMessage } from '../helpers/get-api-err-msg';
 import { ForgotPasswordResponse } from '../types/forgot-password';
+import { accessTokenAtom, currentUserAtom, isAuthenticatedAtom } from '../stores/auth';
+import { LoginResponse } from '../types/login-response';
+import { User } from '../types/user';
 import api from '../lib/axios';
+import { globalStore } from '../stores/store';
 
 export default function useAuth() {
   const [loading, setLoading] = useState(false);
+
   const { showSuccessToast, showErrorToast } = useToast();
   // Register form
   const registerForm = useForm<registerData>({
@@ -82,12 +87,18 @@ export default function useAuth() {
 
   const handleLogin = async (data: loginData) => {
     try {
-      const res = await api.post<ApiResponse>(`${AUTH_ENDPOINT.LOGIN}`, data);
+      const res = await api.post<ApiResponse<LoginResponse>>(`${AUTH_ENDPOINT.LOGIN}`, data);
+
       if (res.data.success) {
+        const { access_token, user } = res.data.data;
         showSuccessToast(res.data.message);
+        globalStore.set(accessTokenAtom, access_token as string);
+        globalStore.set(currentUserAtom, user as User);
+        globalStore.set(isAuthenticatedAtom, true);
         return true;
       }
     } catch (error) {
+      console.log(error);
       const msg = getApiErrorMessage(error);
       showErrorToast(msg);
       return false;

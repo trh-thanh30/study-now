@@ -53,6 +53,7 @@ export class AuthController {
       domain: this.cookieCfg.domain || undefined,
       maxAge: Number(this.cookieCfg.maxAge),
       secure: Boolean(this.cookieCfg.secure),
+      path: this.cookieCfg.path,
     });
     return result;
   }
@@ -131,6 +132,7 @@ export class AuthController {
         domain: this.cookieCfg.domain || undefined,
         maxAge: Number(this.cookieCfg.maxAge),
         secure: Boolean(this.cookieCfg.secure),
+        path: this.cookieCfg.path,
       });
       return result;
     } catch {

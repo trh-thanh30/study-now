@@ -36,7 +36,8 @@ async function bootstrap() {
         'http://localhost:3002',
       ],
       credentials: true,
-      allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+      allowedHeaders:
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization',
       exposedHeaders: 'Set-Cookie',
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     });

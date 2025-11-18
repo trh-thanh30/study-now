@@ -4,6 +4,7 @@ const AUTH_ENDPOINT = {
   VERIFY_EMAIL: '/auth/verify-email',
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
+  GET_PROFILE: '/auth/profile',
 };
 
 export { AUTH_ENDPOINT };

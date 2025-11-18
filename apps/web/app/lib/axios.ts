@@ -1,91 +1,93 @@
-import axios, { AxiosError } from 'axios';
+'use client';
+import { globalStore } from './../stores/store';
+import axios from 'axios';
+import { accessTokenAtom, currentUserAtom } from '../stores/auth';
 
-let accessToken: string | null = null;
 let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (token: string | null) => void;
-  reject: (err: any) => void;
-}> = [];
+let queue: any[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) prom.reject(error);
-    else prom.resolve(token);
-  });
-  failedQueue = [];
+// ✅ Helper functions để lưu/lấy token
+const getStoredToken = () => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('access_token');
 };
 
-export function setAccessToken(token: string | null) {
-  accessToken = token;
-}
+const setStoredToken = (token: string) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('access_token', token);
+};
 
-// ===================================
-// Create axios instance
-const api = axios.create({
+const removeStoredToken = () => {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('access_token');
+};
+
+export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 });
 
-// ===================================
 // Request interceptor
-api.interceptors.request.use(
-  (config) => {
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+api.interceptors.request.use((config) => {
+  // ✅ Ưu tiên lấy từ atom trước (khi vừa login/refresh)
+  let token = globalStore.get(accessTokenAtom);
 
-// ===================================
+  // Nếu atom không có, thử lấy từ localStorage (sau reload)
+  if (!token) {
+    token = getStoredToken();
+    if (token) {
+      // Sync lại atom
+      globalStore.set(accessTokenAtom, token);
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
 // Response interceptor
 api.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as any;
+  (res) => res,
+  async (error) => {
+    const original = error.config;
 
-    if (error.response?.status === 403 && !originalRequest._retry) {
-      const isLoginRequest = originalRequest.url?.includes('/auth/login');
+    if (error.response?.status === 403 && !original._retry) {
+      original._retry = true;
 
-      if (!isLoginRequest) {
-        if (isRefreshing) {
-          return new Promise((resolve, reject) => {
-            failedQueue.push({ resolve, reject });
-          })
-            .then((token) => {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-              return api(originalRequest);
-            })
-            .catch((err) => Promise.reject(err));
-        }
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          queue.push({ resolve, reject });
+        }).then((token) => {
+          original.headers.Authorization = `Bearer ${token}`;
+          return api(original);
+        });
+      }
 
-        originalRequest._retry = true;
-        isRefreshing = true;
+      isRefreshing = true;
 
-        try {
-          const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
-            {},
-            { withCredentials: true }
-          );
+      try {
+        const res = await api.post('/auth/refresh-token', {});
+        const { access_token, user } = res.data.data;
 
-          const { access_token } = res.data.data;
+        globalStore.set(accessTokenAtom, access_token);
+        globalStore.set(currentUserAtom, user);
+        setStoredToken(access_token);
 
-          accessToken = access_token;
+        queue.forEach((p) => p.resolve(access_token));
+        queue = [];
 
-          processQueue(null, access_token);
-
-          originalRequest.headers.Authorization = `Bearer ${access_token}`;
-
-          return api(originalRequest);
-        } catch (err) {
-          accessToken = null;
-          processQueue(err, null);
-          return Promise.reject(err);
-        } finally {
-          isRefreshing = false;
-        }
+        original.headers.Authorization = `Bearer ${access_token}`;
+        return api(original);
+      } catch (err) {
+        queue.forEach((p) => p.reject(err));
+        queue = [];
+        removeStoredToken();
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
 
