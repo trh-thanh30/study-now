@@ -24,6 +24,12 @@ enum user_role {
   ADMIN // Who can manage all the system
   USER // Who can use the system
 }
+enum provider_type {
+  GOOGLE
+  FACEBOOK
+  GITHUB
+  MANUAL
+}
 /**
  * User model
  * 
@@ -36,9 +42,13 @@ enum user_role {
  * 
 **/
 model User {
+ 
   id          String      @id @default(uuid()) @db.Uuid
-  provider_id   String? 
-  provider   String? 
+  provider_id   String?
+  provider_type provider_type? 
+  first_name String?
+  last_name  String?
+  picture String?
   email       String      @unique
   password    String?
   username    String      @unique
@@ -49,13 +59,10 @@ model User {
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
   refresh_token String?
-
-  // code 
   verification_code String?
-  verification_code_expired DateTime? 
+  verification_code_expired DateTime?
   password_reset_code String?
   password_reset_code_expired DateTime?
-
 
   @@index([id, username])
   @@map("user")

@@ -14,7 +14,7 @@ import { Queue } from 'bullmq';
 import { LoginDto } from './dto/login.dto';
 import { RequestEmailDto } from './dto/request-email.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { User, user_status } from '@prisma/client';
+import { provider_type, User, user_status } from '@prisma/client';
 import { TokenUseCase } from './use-case/jwt-token.usecase';
 
 @Injectable()
@@ -83,6 +83,8 @@ export class AuthService {
         password: hashedPassword,
         verification_code: code,
         verification_code_expired: expiredAt,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        provider_type: provider_type.MANUAL,
       },
     });
 

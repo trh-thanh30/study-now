@@ -62,6 +62,12 @@ const envSchema = z.object({
     .default('your-super-secret-refresh-jwt-key-here'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 
+  // Oauth Google
+  GOOGLE_CLIENT_ID: z.string().default(''),
+  GOOGLE_CLIENT_SECRET: z.string().default(''),
+  GOOGLE_CALLBACK_URL: z.string().default(''),
+  GOOGLE_SCOPE: z.string().default(''),
+
   // Email Configuration (Optional)
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().optional(),

@@ -15,6 +15,7 @@ import {
   emailConfig,
   limitRequestConfig,
   limitRequestConfigFactory,
+  oauthConfig,
   tokenConfig,
   validateEnv,
 } from './config';
@@ -27,6 +28,7 @@ import { EmailModule } from './email/email.module';
 import { AuthGuard } from './common/guard/jwt-auth.guard';
 import { TokenUseCase as TokenService } from './module/auth/use-case/jwt-token.usecase';
 import { FormatLoggerService } from './common/logger/format-logger.service';
+import { OauthModule } from './module/oauth/oauth.module';
 
 @Module({
   imports: [
@@ -44,6 +46,7 @@ import { FormatLoggerService } from './common/logger/format-logger.service';
         cookieConfig,
         limitRequestConfig,
         tokenConfig,
+        oauthConfig,
       ],
     }),
     ThrottlerModule.forRootAsync({
@@ -61,6 +64,7 @@ import { FormatLoggerService } from './common/logger/format-logger.service';
     UserModule,
     EmailModule,
     AuthModule,
+    OauthModule,
   ],
   controllers: [AppController],
   providers: [
