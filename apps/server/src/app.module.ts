@@ -10,6 +10,7 @@ import {
   appConfig,
   bullConfig,
   bullConfigFactory,
+  clientConfig,
   cookieConfig,
   databaseConfig,
   emailConfig,
@@ -47,6 +48,7 @@ import { OauthModule } from './module/oauth/oauth.module';
         limitRequestConfig,
         tokenConfig,
         oauthConfig,
+        clientConfig,
       ],
     }),
     ThrottlerModule.forRootAsync({

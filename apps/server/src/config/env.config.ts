@@ -83,6 +83,9 @@ const envSchema = z.object({
   // Rate Limiting
   RATE_LIMIT_TTL: z.coerce.number().default(60),
   RATE_LIMIT_MAX: z.coerce.number().default(100),
+
+  // Client
+  FRONTEND_URL: z.string().default('http://localhost:3001'),
 });
 
 export type Environment = z.infer<typeof envSchema>;

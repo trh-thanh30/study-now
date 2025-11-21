@@ -34,6 +34,10 @@ async function bootstrap() {
         'http://localhost:3000',
         'http://localhost:3001',
         'http://localhost:3002',
+        'https://study-now.vercel.app',
+        'https://www.study-now.vercel.app',
+        'https://study-now.com',
+        'https://www.study-now.com',
       ],
       credentials: true,
       allowedHeaders:

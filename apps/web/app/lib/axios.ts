@@ -1,7 +1,7 @@
 'use client';
 import { globalStore } from './../stores/store';
 import axios from 'axios';
-import { accessTokenAtom, currentUserAtom } from '../stores/auth';
+import { accessTokenAtom, currentUserAtom, isAuthenticatedAtom } from '../stores/auth';
 
 let isRefreshing = false;
 let queue: any[] = [];
@@ -74,6 +74,7 @@ api.interceptors.response.use(
 
         globalStore.set(accessTokenAtom, access_token);
         globalStore.set(currentUserAtom, user);
+        globalStore.set(isAuthenticatedAtom, true);
         setStoredToken(access_token);
 
         queue.forEach((p) => p.resolve(access_token));

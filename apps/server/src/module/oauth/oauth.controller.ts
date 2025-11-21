@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, type Response } from 'express';
 import { Public } from 'src/common/decorators/public.decorator';
 import { GoogleProfile } from 'src/common/types/google-profile.type';
-import { cookieConfig } from 'src/config';
+import { clientConfig, cookieConfig } from 'src/config';
 import type { ConfigType } from '@nestjs/config';
 
 @Controller('auth')
@@ -13,6 +13,8 @@ export class OauthController {
     private readonly oauthService: OauthService,
     @Inject(cookieConfig.KEY)
     private readonly cookieCfg: ConfigType<typeof cookieConfig>,
+    @Inject(clientConfig.KEY)
+    private readonly clientCfg: ConfigType<typeof clientConfig>,
   ) {}
   @Public()
   @UseGuards(AuthGuard('google'))
@@ -38,7 +40,7 @@ export class OauthController {
     @Res() res: Response,
   ) {
     try {
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3001';
+      const frontendUrl = this.clientCfg.frontendUrl;
       const result = await this.oauthService.validateGoogleUser(req.user);
       res.cookie('refresh_token', result.refresh_token, {
         httpOnly: Boolean(this.cookieCfg.httpOnly),
@@ -52,9 +54,7 @@ export class OauthController {
         secure: Boolean(this.cookieCfg.secure),
         path: this.cookieCfg.path,
       });
-      res.redirect(
-        `${frontendUrl}/auth/callback?accessToken=${result.access_token}&refreshToken=${result.refresh_token}`,
-      );
+      res.redirect(`${frontendUrl}/dashboard/profile`);
       return result;
     } catch (error) {
       console.log('Error in Google OAuth callback:', error);
