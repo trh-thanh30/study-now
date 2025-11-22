@@ -1,15 +1,15 @@
 'use client';
 import React from 'react';
-import { HeroSection } from './HeroSection';
-import { FeaturesSection } from './FeaturesSection';
-import { WorksTimeLineSection } from './WorksTimeLineSection';
-import { FaqSection } from './FaqSection';
+import { HeroSection } from '../../../components/landing/HeroSection';
+import { FeaturesSection } from '../../../components/landing/FeaturesSection';
+import { WorksTimeLineSection } from '../../../components/landing/WorksTimeLineSection';
+import { FaqSection } from '../../../components/landing/FaqSection';
 import { ArrowUp, Link } from 'lucide-react';
 import { Affix, Button, Transition } from '@mantine/core';
 import { useWindowScroll } from '@mantine/hooks';
-import { Header } from '../Header';
+import { Header } from '../../../components/Header';
 
-export function LandingPage() {
+export function LandingView() {
   const [scroll, scrollTo] = useWindowScroll();
   return (
     <div className="w-full bg-white max-w-6xl mx-auto px-5">

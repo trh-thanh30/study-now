@@ -1,13 +1,13 @@
 import React from 'react';
-import { Logo } from '../../components';
-import FormLogin from '../section/auth/components/form-login';
+import { Logo } from '../../../components';
+import FormLogin from '../../section/auth/components/form-login';
 
 export function LoginView() {
   return (
     <div className="w-full max-w-md">
       {/* Logo Section */}
       <div className="flex justify-center mb-8">
-        <Logo />
+        <Logo className="w-12 h-12" />
       </div>
 
       {/* Title */}

@@ -1,6 +1,6 @@
 import React from 'react';
-import { LandingPage } from './components/landing';
+import { LandingView } from './common/view/landing/landing-view';
 
 export default function Page() {
-  return <LandingPage />;
+  return <LandingView />;
 }

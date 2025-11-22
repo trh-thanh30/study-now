@@ -24,7 +24,7 @@ export function Header() {
   return (
     <header className=" text-white px-4 py-4 md:px-8 fixed top-0 left-0 right-0 z-50 max-w-7xl mx-auto bg-white rounded-b-md">
       <div className=" flex justify-between items-center">
-        <Logo />
+        <Logo className="w-12 h-12" />
         <div className="space-x-8 text-sm text-gray-700 font-semibold ">
           {headerTitle.map((item) => (
             <a

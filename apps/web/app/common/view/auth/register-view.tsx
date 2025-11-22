@@ -1,13 +1,13 @@
 import React from 'react';
-import { Logo } from '../../components';
-import FormRegister from '../section/auth/components/form-register';
+import { Logo } from '../../../components';
+import FormRegister from '../../section/auth/components/form-register';
 
 export function RegisterView() {
   return (
     <div className="w-full max-w-md">
       {/* Logo Section */}
       <div className="flex justify-center mb-8">
-        <Logo />
+        <Logo className="w-12 h-12" />
       </div>
 
       {/* Title */}

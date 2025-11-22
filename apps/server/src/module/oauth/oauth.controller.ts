@@ -54,7 +54,7 @@ export class OauthController {
         secure: Boolean(this.cookieCfg.secure),
         path: this.cookieCfg.path,
       });
-      res.redirect(`${frontendUrl}/dashboard/profile`);
+      res.redirect(`${frontendUrl}/dashboard/timer`);
       return result;
     } catch (error) {
       console.log('Error in Google OAuth callback:', error);

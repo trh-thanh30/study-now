@@ -11,7 +11,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     <AppShell
       padding="md"
       layout="alt"
-      header={{ height: 60 }}
       navbar={{
         width: 260,
         breakpoint: 0,
@@ -22,22 +21,24 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           background: '#e8dbd0',
         },
         navbar: {
-          background: '#efe6dd', // sidebar tone nhẹ
-          borderRight: '1px solid #e2d5c8',
-          padding: '16px',
-        },
-        header: {
           background: '#efe6dd',
-          borderBottom: '1px solid #e2d5c8',
-          paddingLeft: 16,
-          paddingRight: 16,
+          borderRight: '1px solid #e2d5c8',
+          padding: '18px',
         },
       }}
     >
-      {/* HEADER */}
-      <AppShell.Header>
-        <Burger opened={opened} onClick={toggle} size="sm" />
-      </AppShell.Header>
+      {/* Nút toggle sidebar tuyệt đối */}
+      <Burger
+        opened={opened}
+        onClick={toggle}
+        size="sm"
+        style={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          zIndex: 9999,
+        }}
+      />
 
       {/* SIDEBAR */}
       <AppShell.Navbar>
@@ -45,7 +46,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       </AppShell.Navbar>
 
       {/* MAIN CONTENT */}
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main style={{ marginTop: 0, height: '100vh' }}>{children}</AppShell.Main>
     </AppShell>
   );
 }
