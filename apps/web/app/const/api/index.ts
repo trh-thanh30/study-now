@@ -5,6 +5,7 @@ const AUTH_ENDPOINT = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
   GET_PROFILE: '/auth/profile',
+  LOGOUT: '/auth/logout',
 };
 
 export { AUTH_ENDPOINT };

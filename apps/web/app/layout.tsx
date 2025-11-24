@@ -1,11 +1,10 @@
 import '@mantine/core/styles.css';
+import './globals.css';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import { MantineProvider } from '@mantine/core';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Toaster } from 'react-hot-toast';
-
-import './globals.css';
 
 const fontSans = Inter({
   variable: '--font-sans',

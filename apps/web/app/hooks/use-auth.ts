@@ -25,9 +25,12 @@ import { LoginResponse } from '../types/login-response';
 import { User } from '../types/user';
 import api from '../lib/axios';
 import { globalStore } from '../stores/store';
+import { useRouter } from 'next/navigation';
 
 export default function useAuth() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   const { showSuccessToast, showErrorToast } = useToast();
   // Register form
@@ -134,6 +137,37 @@ export default function useAuth() {
       return false;
     }
   };
+  const handleGetProfile = async () => {
+    try {
+      const res = await api.get<ApiResponse>(`${AUTH_ENDPOINT.GET_PROFILE}`);
+      if (res.data.success) {
+        // showSuccessToast(res.data.message);
+        setUser(res.data.data as User);
+        return true;
+      }
+    } catch (error) {
+      const msg = getApiErrorMessage(error);
+      showErrorToast(msg);
+      return false;
+    }
+  };
+  const handleSignOut = async () => {
+    try {
+      const res = await api.post<ApiResponse>(`${AUTH_ENDPOINT.LOGOUT}`);
+      if (res.data.success) {
+        globalStore.set(accessTokenAtom, null);
+        globalStore.set(currentUserAtom, null);
+        globalStore.set(isAuthenticatedAtom, false);
+        showSuccessToast(res.data.message);
+        router.push('/');
+        return true;
+      }
+    } catch (error) {
+      const msg = getApiErrorMessage(error);
+      showErrorToast(msg);
+      return false;
+    }
+  };
   return {
     registerForm,
     verifyEmailForm,
@@ -141,10 +175,13 @@ export default function useAuth() {
     forgotPasswordForm,
     resetPasswordForm,
     loading,
+    user,
     handleRegister,
     handleVerifyEmail,
     handleLogin,
     handleForgotPassword,
     handleResetPassword,
+    handleGetProfile,
+    handleSignOut,
   };
 }
